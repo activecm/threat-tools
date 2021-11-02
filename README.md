@@ -5,4 +5,4 @@ beacon-simulator permits you to mimic a compromised system calling home to a com
 Some command examples: <br/>
   ./beacon-simulator.sh 192.168.0.1 443 150 12 <br/>
   ./beacon-simulator.sh 192.168.0.7 53 200 10 udp <br/>
-Run the script without switches to access the online help. <br\>
+Run the script without switches to access the online help. <br/>
