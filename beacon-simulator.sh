@@ -3,7 +3,9 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.3
+#V0.4
+#The payload is a random number of 'a' 's (between 0 and 1424 a's).
+#Note: the payload _is not sent_ if using TCP and the remote port is closed.
 
 Usage () {
 	echo 'Parameters:' >&2
@@ -11,7 +13,7 @@ Usage () {
 	echo '	2: port' >&2
 	echo '	3: interval' >&2
 	echo '	4: jitter' >&2
-	echo '	5: optional protocol (default is   tcp   ; put   udp  here if you want that)' >&2
+	echo '	5: optional protocol (default is   tcp   ; put   udp   here if you want that)' >&2
 	echo '' >&2
 	echo 'Examples:' >&2
 	echo "$0 192.168.0.1 9999 150 12" >&2
@@ -45,7 +47,7 @@ if [ "$3" -lt "$4" ]; then
 	exit 1
 fi
 
-if [ "$5" = "udp" ]; then
+if [ "$5" = "udp" -o "$5" = "UDP" ]; then
 	proto_flag=' -u '
 	proto_acronym='udp'
 else
@@ -56,18 +58,20 @@ fi
 
 echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}/2) seconds" >&2
 while : ; do
+	random_payload=`dd if=/dev/zero bs=1 count=$[ RANDOM / 23 ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and 1424 letter a's as a payload
+
 	if [ -n "$netcat_bin" ]; then
 		if [ "$proto_acronym" = "udp" ]; then
-			echo ' ' | "$netcat_bin" $proto_flag "$1" "$2" >/dev/null 2>/dev/null
+			echo -n "$random_payload" | "$netcat_bin" $proto_flag "$1" "$2" >/dev/null 2>/dev/null
 		else
-			"$netcat_bin" $proto_flag -w 10 "$1" "$2" </dev/null >/dev/null 2>/dev/null
+			echo -n "$random_payload" | "$netcat_bin" $proto_flag -w 10 "$1" "$2" >/dev/null 2>/dev/null
 		fi
 	else
 		if [ "$proto_acronym" = "udp" ]; then
 			#For some reason the packet is never sent if stdout is redirected to /dev/null
-			echo -n ' ' >"/dev/$proto_acronym/$1/$2"
+			echo -n "$random_payload" >"/dev/$proto_acronym/$1/$2"
 		else
-			echo -n ' ' >"/dev/$proto_acronym/$1/$2" >/dev/null 2>/dev/null
+			echo -n "$random_payload" >"/dev/$proto_acronym/$1/$2" >/dev/null 2>/dev/null
 		fi
 	fi
 
