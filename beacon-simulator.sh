@@ -3,7 +3,7 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.4
+#V0.5
 #The payload is a random number of 'a' 's (between 0 and 1424 a's).
 #Note: the payload _is not sent_ if using TCP and the remote port is closed.
 
@@ -14,10 +14,13 @@ Usage () {
 	echo '	3: interval' >&2
 	echo '	4: jitter' >&2
 	echo '	5: optional protocol (default is   tcp   ; put   udp   here if you want that)' >&2
+	echo '      (you must specify tcp or udp if you want to force max_payload_size)' >&2
+	echo '	6: max_payload_size (a payload with a random number of characters between 0 bytes and this value will be sent)' >&2
 	echo '' >&2
 	echo 'Examples:' >&2
 	echo "$0 192.168.0.1 9999 150 12" >&2
 	echo "$0 192.168.0.7 514 200 10 udp" >&2
+	echo "$0 192.168.0.7 9999 150 12 tcp 1000" >&2
 	exit 1
 }
 
@@ -37,7 +40,7 @@ fi
 
 if [ "z$1" = "z--help" -o "z$1" = "z-h" ]; then
 	Usage
-elif [ -z "$4" -o -n "$6" ]; then
+elif [ -z "$4" -o -n "$7" ]; then
 	echo "Incorrect number of parameters, exiting."
 	Usage
 fi
@@ -55,10 +58,29 @@ else
 	proto_acronym='tcp'
 fi
 
+if [ -n "$6" ]; then
+	if [[ $6 =~ ^0+$ ]]; then
+		max_payload_size="none"
+		random_divisor="1"		#Won't be used
+	elif [[ $6 =~ ^[[:digit:]]+$ ]]; then
+		max_payload_size="$6"
+		random_divisor=$((32767 / $max_payload_size))
+	else
+		echo "max_payload_size field contains non-digits: $6 .  Exiting." >&2
+		exit 1
+	fi
+else
+	max_payload_size="1424"
+	random_divisor="23"
+fi
 
-echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}/2) seconds" >&2
+echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}/2) seconds, max payload of $max_payload_size bytes." >&2
 while : ; do
-	random_payload=`dd if=/dev/zero bs=1 count=$[ RANDOM / 23 ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and 1424 letter a's as a payload
+	if [ "$max_payload_size" = "none" ]; then
+		random_payload=''
+	else
+		random_payload=`dd if=/dev/zero bs=1 count=$[ $RANDOM / $random_divisor ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size letter a's as a payload
+	fi
 
 	if [ -n "$netcat_bin" ]; then
 		if [ "$proto_acronym" = "udp" ]; then
@@ -71,7 +93,7 @@ while : ; do
 			#For some reason the packet is never sent if stdout is redirected to /dev/null
 			echo -n "$random_payload" >"/dev/$proto_acronym/$1/$2"
 		else
-			echo -n "$random_payload" >"/dev/$proto_acronym/$1/$2" >/dev/null 2>/dev/null
+			echo -n "$random_payload" >"/dev/$proto_acronym/$1/$2" 2>/dev/null
 		fi
 	fi
 
