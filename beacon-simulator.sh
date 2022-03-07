@@ -3,7 +3,7 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.5
+#V0.6
 #The payload is a random number of 'a' 's (between 0 and 1424 a's).
 #Note: the payload _is not sent_ if using TCP and the remote port is closed.
 
@@ -12,7 +12,7 @@ Usage () {
 	echo '	1: target ip' >&2
 	echo '	2: port' >&2
 	echo '	3: interval' >&2
-	echo '	4: jitter' >&2
+	echo '	4: jitter (max deviation from interval)' >&2
 	echo '	5: optional protocol (default is   tcp   ; put   udp   here if you want that)' >&2
 	echo '      (you must specify tcp or udp if you want to force max_payload_size)' >&2
 	echo '	6: max_payload_size (a payload with a random number of characters between 0 bytes and this value will be sent)' >&2
@@ -74,7 +74,7 @@ else
 	random_divisor="23"
 fi
 
-echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}/2) seconds, max payload of $max_payload_size bytes." >&2
+echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}) seconds, max payload of $max_payload_size bytes." >&2
 while : ; do
 	if [ "$max_payload_size" = "none" ]; then
 		random_payload=''
@@ -98,7 +98,7 @@ while : ; do
 	fi
 
 	echo -n '.'
-	naptime=$[ (($RANDOM * $4) / 32767) - ($4 / 2) + $3 ]
+	naptime=$[ (($RANDOM * $4 * 2) / 32767) - ($4) + $3 ]	#"random value between 0 and 1 * 2x jitter", minus 1x jitter plus interval
 	#echo "Sleeping for $naptime"
 	sleep "$naptime"
 done
