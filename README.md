@@ -6,3 +6,5 @@ Some command examples: <br/> <br/>
   ./beacon-simulator.sh 192.168.0.1 443 150 12 <br/>
   ./beacon-simulator.sh 192.168.0.7 53 200 10 udp <br/> <br/>
 Run the script without switches to access the online help. <br/>
+
+Note: the standard netcat/nc tools included with Linux do not always handle timeouts well, expecially with UDP.  Please install ncat (commonly found in a package called "ncat", or if not, as part of the "nmap" package).  beacon-simulator will prefer to use this if it's installed.
