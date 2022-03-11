@@ -3,7 +3,7 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.6
+#V0.7
 #The payload is a random number of 'a' 's (between 0 and 1424 a's).
 #Note: the payload _is not sent_ if using TCP and the remote port is closed.
 
@@ -61,17 +61,17 @@ fi
 if [ -n "$6" ]; then
 	if [[ $6 =~ ^0+$ ]]; then
 		max_payload_size="none"
-		random_divisor="1"		#Won't be used
+		#random_divisor="1"		#Won't be used
 	elif [[ $6 =~ ^[[:digit:]]+$ ]]; then
 		max_payload_size="$6"
-		random_divisor=$((32767 / $max_payload_size))
+		#random_divisor=$((32767 / $max_payload_size))
 	else
 		echo "max_payload_size field contains non-digits: $6 .  Exiting." >&2
 		exit 1
 	fi
 else
 	max_payload_size="1424"
-	random_divisor="23"
+	#random_divisor="23"
 fi
 
 echo "Will connect to host $1, $proto_acronym port $2 every $3 +/-(${4}) seconds, max payload of $max_payload_size bytes." >&2
@@ -79,7 +79,10 @@ while : ; do
 	if [ "$max_payload_size" = "none" ]; then
 		random_payload=''
 	else
-		random_payload=`dd if=/dev/zero bs=1 count=$[ $RANDOM / $random_divisor ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size letter a's as a payload
+		#Note - we stopped using $RANDOM as it's limited to 0-32767, so can never generate payloads larger than 32767 bytes:
+		#random_payload=`dd if=/dev/zero bs=1 count=$[ $RANDOM / $random_divisor ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size letter a's as a payload
+		#Instead we pul bytes from /dev/urandom to generate payloads from 0 to max_payload_size bytes, inclusive.:
+		random_payload=`dd if=/dev/zero bs=1 count=$(( `od -A n -t d -N 3 /dev/urandom` % ($max_payload_size + 1) )) 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size (inclusive) letter a's as a payload
 	fi
 
 	if [ -n "$netcat_bin" ]; then
