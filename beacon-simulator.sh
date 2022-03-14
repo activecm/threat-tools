@@ -3,9 +3,9 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.7
-#The payload is a random number of 'a' 's (between 0 and 1424 a's).
-#Note: the payload _is not sent_ if using TCP and the remote port is closed.
+#V0.7.1
+#The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
+#Note: the payload _is never sent_ if using TCP and the remote port is closed.
 
 Usage () {
 	echo 'Parameters:' >&2
@@ -82,7 +82,7 @@ while : ; do
 		#Note - we stopped using $RANDOM as it's limited to 0-32767, so can never generate payloads larger than 32767 bytes:
 		#random_payload=`dd if=/dev/zero bs=1 count=$[ $RANDOM / $random_divisor ] 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size letter a's as a payload
 		#Instead we pul bytes from /dev/urandom to generate payloads from 0 to max_payload_size bytes, inclusive.:
-		random_payload=`dd if=/dev/zero bs=1 count=$(( `od -A n -t d -N 3 /dev/urandom` % ($max_payload_size + 1) )) 2>/dev/null | tr '\0' 'a'`		#Creates between 0 and max_payload_size (inclusive) letter a's as a payload
+		random_payload="$(dd if=/dev/zero bs=1 count=$(( $(od -A n -t d -N 3 /dev/urandom) % ($max_payload_size + 1) )) 2>/dev/null | tr '\0' 'a')"		#Creates between 0 and max_payload_size (inclusive) letter a's as a payload
 	fi
 
 	if [ -n "$netcat_bin" ]; then
