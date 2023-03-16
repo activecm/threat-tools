@@ -3,17 +3,17 @@
 #Based on ideas from Chris Brenton
 #Written by Bill Stearns bill@activecountermeasures.com
 #Released under the GPL
-#V0.7.1
+#V0.8.0
 #The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
 #Note: the payload _is never sent_ if using TCP and the remote port is closed.
 
 Usage () {
 	echo 'Parameters:' >&2
 	echo '	1: target ip' >&2
-	echo '	2: port' >&2
+	echo '	2: port (or icmp type: 8=ping, 13=timestampreq, 17=addrmaskreq)' >&2
 	echo '	3: interval' >&2
 	echo '	4: jitter (max deviation from interval)' >&2
-	echo '	5: optional protocol (default is   tcp   ; put   udp   here if you want that)' >&2
+	echo '	5: optional protocol (default is   tcp   ; put  udp  or  icmp  here if you want those)' >&2
 	echo '      (you must specify tcp or udp if you want to force max_payload_size)' >&2
 	echo '	6: max_payload_size (a payload with a random number of characters between 0 bytes and this value will be sent)' >&2
 	echo '' >&2
@@ -53,6 +53,19 @@ fi
 if [ "$5" = "udp" -o "$5" = "UDP" ]; then
 	proto_flag=' -u '
 	proto_acronym='udp'
+elif [ "$5" = "icmp" -o "$5" = "ICMP" ]; then
+	if ! which hping3 >/dev/null ; then
+		echo "ICMP requested but hping3 is not installed.  Please run 'sudo yum -y install hping3', 'sudo apt -y install hping3', or 'sudo port install hping3'."
+		exit 1
+	fi
+	proto_acronym='icmp'
+	if [ "$2" = "8" -o "$2" = "ping" -o "$2" = "echo" ]; then
+		icmp_type="8"
+	elif [ "$2" = "13" -o "$2" = "17" ]; then
+		icmp_type="$2"
+	else
+		icmp_type="8"		#Fall back on ping
+	fi
 else
 	proto_flag=' '
 	proto_acronym='tcp'
@@ -85,7 +98,9 @@ while : ; do
 		random_payload="$(dd if=/dev/zero bs=1 count=$(( $(od -A n -t d -N 3 /dev/urandom) % ($max_payload_size + 1) )) 2>/dev/null | tr '\0' 'a')"		#Creates between 0 and max_payload_size (inclusive) letter a's as a payload
 	fi
 
-	if [ -n "$netcat_bin" ]; then
+	if [ "$proto_acronym" = "icmp" ]; then
+		sudo hping3 --icmp --icmptype "$2" -c 1 -n -q -e "$random_payload" "$1" >/dev/null 2>&1
+	elif [ -n "$netcat_bin" ]; then
 		if [ "$proto_acronym" = "udp" ]; then
 			echo -n "$random_payload" | "$netcat_bin" $proto_flag "$1" "$2" >/dev/null 2>/dev/null
 		else
