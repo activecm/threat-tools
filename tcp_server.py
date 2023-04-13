@@ -22,9 +22,9 @@ while True:
 	TCPserver = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #initialize TCP stream
 	TCPserver.bind((SERVER_IP, SERVER_PORT)) #Bind TCP Stream connection
 	TCPserver.listen(1) #Listen for two TCP connections
-	conn, addr = TCPserver.accept() #connection 1 which is client
 
 	while True:
+		conn, addr = TCPserver.accept() #connection 1 which is client
 		m = random.randint(5,20) #creates simulated command length
 		message = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(m)) #creates simulated command
 		r1 = random.randint(30,50) #sets one side of the buffer length
@@ -43,4 +43,3 @@ while True:
 		ciphertext, tag = CIPHER.encrypt_and_digest(message) #encrypting message to send to client
 		conn.sendall(ciphertext) #send ciphertext of raw message
 		print()
-		break
