@@ -1,11 +1,13 @@
-#!/bin/bash
-#Copyright 2021 Active Countermeasures
-#Based on ideas from Chris Brenton
-#Written by Bill Stearns bill@activecountermeasures.com
-#Released under the GPL
-#V0.8.0
-#The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
-#Note: the payload _is never sent_ if using TCP and the remote port is closed.
+# !/bin/bash
+
+# Copyright 2021 Active Countermeasures
+# Written by Bill Stearns bill@activecountermeasures.com
+# Based on ideas from Chris Brenton
+# Released under GPL 3.0 License
+# v0.8.0
+
+# The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
+# Note: the payload _is never sent_ if using TCP and the remote port is closed.
 
 Usage () {
 	echo 'Parameters:' >&2

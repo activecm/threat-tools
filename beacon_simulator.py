@@ -1,8 +1,11 @@
-#Based off of beacon_simulator.sh written by Bill Stearns bill@activecountermeasures.com
-#Written by Mason Bryan mason.bryan@omegaatc.com
-#Version 1
-#The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
-#Note: the payload _is never sent_ if using TCP and the remote port is closed.
+# Based off of beacon_simulator.sh written by Bill Stearns bill@activecountermeasures.com
+# Written by Mason Bryan mason.bryan@omegaatc.com
+# Released under GPL 3.0 License
+# Version 1
+
+# The payload is a random number of 'a' 's (between 0 and max_payload_size a's).
+# Note: the payload _is never sent_ if using TCP and the remote port is closed.
+
 import socket, time, random, argparse
 
 parser = argparse.ArgumentParser(description="Example command: 'python3 .\\beacon_simulator.py -ip 192.168.0.5 -p 2000 -i 10 -j 3 -m 1024' or 'python3 .\\beacon_simulator.py -ip 192.168.0.5 -p 2000 --interval 120 --jitter 12 --max_payload 1024 --tcp'")
