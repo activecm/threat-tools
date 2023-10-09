@@ -3,11 +3,8 @@
 # Copyright 2023, Chris Brenton
 # Released under GPL 3.0 License
 
-# Sample call:
-# Then run this command with screen:
-# screen -S c2 -d -m /bin/beacon-test <Target IP or FQDN>
-
-
+# Command syntax:
+# /path/to/beacon-test.sh <Target IP or FQDN>
 
 while :
     do
