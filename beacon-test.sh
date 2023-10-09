@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 # Copyright 2023, Chris Brenton
 # Released under GPL 3.0 License

@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 # Copyright 2022, Active Countermeasures
 # Written by Bill Stearns bill@activecountermeasures.com
