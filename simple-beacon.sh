@@ -4,7 +4,7 @@
 # Released under GPL 3.0 License
 
 # Command syntax:
-# /path/to/beacon-test.sh <Target IP or FQDN>
+# /path/to/simple-beacon.sh <Target IP or FQDN>
 
 while :
     do
