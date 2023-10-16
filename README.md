@@ -4,7 +4,6 @@ This repository contains several scripts that will allow you to mimic a compromi
 
 ## Table of Contents
 [Overview](#overview)</br>
-[Dependencies](#dependencies)</br>
 [Example Setup](#example-setup)</br>
 [`simple-listener.sh`](#simple-listenersh)</br>
 [`beacon-simulator.py`](#beacon-simulatorpy)</br>
