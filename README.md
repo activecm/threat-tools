@@ -4,7 +4,7 @@ This repository contains several scripts that will allow you to mimic a compromi
 
 ## Table of Contents
 [Overview](#overview)</br>
-[Dependencies](#dependencies)</br>
+[Example Setup](#example-setup)</br>
 [`simple-listener.sh`](#simple-listenersh)</br>
 [`beacon-simulator.py`](#beacon-simulatorpy)</br>
 [`beacon-simulator.sh`](#beacon-simulatorsh)</br>
@@ -12,14 +12,19 @@ This repository contains several scripts that will allow you to mimic a compromi
 [Python Script Pairs](#python-script-pairs)</br>
 [Running Tools in the Background with `screen`](#running-tools-in-the-background-with-screen)
 
+Some names were changed from previous versions in order to be more intuitive. Navigate to the following section to reference name changes if you do not see your script in the Table of Contents:</br>
+
+[Script Name Changes](#script-name-changes)
+
+</br>
+</br>
 
 ## Overview
-In order to run these scripts, you will need two systems: one to act as the compromised client sending the beacon, and one to act as the C2 server. The client will need to run one of the beacon simulator scripts, and the server will need to run one of the scripts to set up a listener. With exception to the scripts within `python-scripts`, all beacon simulators are meant to be used in tandem with `simple-listener.sh` running on the server. The only exception to this is if the client is running `simple-beacon.sh`, which can be used on its own without additional scripts running on the server.
+In order to run these scripts, you will need two systems: one to act as the compromised client sending the beacon, and one to act as the C2 server. The client will need to run one of the beacon simulator scripts, and the server will need to run one of the scripts to set up a listener. With exception to the scripts within `python-scripts`, all beacon simulators are meant to be used in tandem with `simple-listener.sh` running on the server. 
+
+The only exception to this is if the client is running `simple-beacon.sh`, which can simulate beacon traffic by repeatedly sending web requests to any public web server.
 
 For the majority of users, `beacon-simulator.py` and `simple-listener.sh` will be sufficient to simulate a C2 channel. Alternative beacon simulators are available in the `shell-scripts` and `python-scripts` directories.
-
-## Dependencies
-In order to use the tools, you must have `ncat`, `hping3`, and `python3` installed on each of your systems. You will also need to install and use `pip3` to install `pycryptodome` if your system doesn't have it already.
 
 </br>
 </br>
@@ -28,6 +33,11 @@ In order to use the tools, you must have `ncat`, `hping3`, and `python3` install
 `simple-listener.sh` should run on the machine simulating the C2 server. It will set up a listening port for either TCP or UDP connections.
 
 It should be used in conjunction with `beacon-simulator.py`, `beacon-simulator.sh`, or `simple-beacon.sh` running on the machine simulating the compromised client.
+
+### Dependencies:
+Ensure you have the network utility `ncat` installed on the system running the script.
+
+**NOTE:** While the script can work with `netcat` and `nc`, both have shown issues with handling UDP timeouts. We highly encourage you to install `ncat`.
 
 ### Command Syntax:
 ```
@@ -53,7 +63,10 @@ Sets up port 3333 to listen for TCP connections.
 ## `beacon-simulator.py`
 `beacon-simulator.py` should run on the machine simulating the compromised client. It will allow you to send a jittered beacon with a payload of random size to the targeted IP. The IP should point to the machine acting as the C2 server running `./simple-listener.sh`.
 
-#### Command Syntax
+### Dependencies
+You will need to use the `python3` interpreter to run the script. Most OS's come with this already installed. You will need to install it if the system running the script does not have it.
+
+### Command Syntax
 ```
 python3 ./beacon-simulator.py <ip> <port> <interval> <jitter> <max payload> <protocol>
 ```
@@ -64,7 +77,7 @@ python3 ./beacon-simulator.py <ip> <port> <interval> <jitter> <max payload> <pro
 `max payload`: The beacon's maximum payload size in bytes. The payload is a random string of a's ranging from 0 to the maximum payload size.</br>
 `protocol` (optional): The protocol of the beacon. Accepts either `--tcp` or `--udp`. The TCP protocol is used by default.</br>
 
-#### Example Commands
+### Example Commands
 ```
 python3 ./beacon-simulator.py -ip 192.168.56.104 -p 9000 -i 30 -j 5 -m 1024
 ```
@@ -80,7 +93,16 @@ Sends a random payload of up to 256 bytes to port 3333 on the device at IP 192.1
 ## `beacon-simulator.sh`
 `beacon-simulator.sh` should run on the machine simulating the compromised client. It will allow you to send a jittered beacon with a payload of random size to the targeted IP. The IP should point to the machine acting as the C2 server running `./simple-listener.sh`.
 
-#### Command Syntax
+### Dependencies
+
+Please ensure you have the following tools installed on the system running the script:
+
+- `ncat`: To make TCP or UDP connections.
+- `hping3`: To send ICMP packets.
+
+**NOTE:** While the script can work with `netcat` and `nc`, both have shown issues with handling UDP timeouts. We highly encourage you to install `ncat`.
+
+### Command Syntax
 ```
 ./beacon-simulator.sh <ip> <port> <interval> <jitter> <protocol> <max payload>
 ```
@@ -91,7 +113,7 @@ Sends a random payload of up to 256 bytes to port 3333 on the device at IP 192.1
 `protocol` (optional): The protocol of the beacon. Accepts `tcp`, `udp`, or `icmp`. Defaults to `tcp`.</br>
 `max payload` (optional): The beacon's maximum payload size in bytes. The payload is a random string of a's ranging from 0 to the maximum payload size. Defaults to `1424`.</br>
 
-#### Example Commands
+### Example Commands
 ```
 ./beacon-simulator.sh 192.168.56.104 9000 30 5
 ```
@@ -113,6 +135,13 @@ Pings the server at 192.168.56.102 every 8-12 seconds.
 ## `simple-beacon.sh`
 `simple-beacon.sh` should run on the machine simulating the compromised client. It sends a very simple HTTP request with a custom user-agent string (`Modzilla/0.0001(Atari7800)`) to a specified IP address or FQDN every 200-350 seconds. It can be used on its own or with `simple-listener.sh` running on the server if you specify a port other than the default `80`.
 
+### Dependencies
+This script uses common utilities commonly pre-installed on Unix-like systems. You should not need to install them. For your reference, the required utilities are:
+
+- `curl`
+- `shuf`
+- `sleep`
+
 #### Command Syntax
 ```
 ./simple-beacon.sh <IP or FQDN>
@@ -125,7 +154,6 @@ Pings the server at 192.168.56.102 every 8-12 seconds.
 ```
 Sets up a jittered beacon to port 80 on the server at 192.168.56.101
 
-#### Example Commands
 ```
 ./simple-beacon.sh example.com:9000
 ```
@@ -141,7 +169,24 @@ Default Server Port: 9000</br>
 Default Payload Size: 0 - 1200 bytes</br>
 Default Beaconing Interval: 30 - 60 seconds
 
+### Dependencies
+This script will require the following tools be installed on the system running the script:
+
+- `python3`: Interpreter to run the script. Most systems have this pre-installed.
+- `pycryptodome`: Python cryptographic library.
+- `pip3`: Needed to install `pycryptodome` if it is not already installed.
+
+#### Installing `pycryptodome`
+If your system does not have `pycryptodome` installed, follow these instructions:
+
+1. Install the Python package manager, `pip3`.
+1. Run the following command:
+```
+pip3 install pycryptodome
+```
+
 ### Configurations
+
 #### Configuring the Client Files
 1. On the client device, open `tcp-client.py` or `udp-client.py` in a text editor such as nano.
 1. Navigate to the line starting with `server =` followed by a list of IP addresses and replace them with the IP Address(es) of your server(s).
@@ -157,6 +202,7 @@ NOTE: This is only necessary if you changed the server port number in a `-client
 1. Save the changes and exit.
 
 ### Running the Script Pairs
+
 #### TCP Beacon Pair
 On the client machine, navigate into the `python-scripts` directory and run:
 ```
@@ -183,7 +229,10 @@ python3 ./udp-server.py
 ## Running Tools in the Background with `screen`
 You can use the `screen` utility to run these scripts in a separate session in the background and access it later. To do so, simply add `screen -S <name> -d -m` at the beginning of the command, replacing `<name>` with a name for the session.
 
-#### Start session in the background:
+### Dependencies
+You may need to install `screen` if it is not already installed on your system.
+
+### Start Session in the Background
 ```
 screen -S my-session -d -m ./simple-beacon.sh 192.168.56.104
 ```
@@ -191,8 +240,23 @@ This will run `simple-beacon.sh` in the background.
 
 If you wish to access the session later and turn it off, you can do so by using `screen -r <name>` to re-attach the session to the terminal window then pressing "Ctrl + C".
 
-#### Re-attaching the session:
+### Re-attaching the Session
 ```
 screen -r my-session
 ```
-This will re-attach `my-session` to the terminal window. I can then stop `simple-beacon.sh` by pressing "Ctrl + C".
+This will re-attach `my-session` to the terminal window. You can then stop `simple-beacon.sh` by pressing "Ctrl + C".
+
+</br>
+</br>
+
+## File Name Changes
+File names have changed from previous versions in order to be more intuitive and consistent. Returning users can reference the table below to confirm the new name for their past scripts:
+
+| Old Name            | New Name            |
+| ------------------- | ------------------- |
+| beacon_simulator.py | beacon-simulator.py |
+| beacon-test         | simple-beacon.sh    |
+| tcp_client.py       | tcp-client.py       |
+| tcp_server.py       | tcp-server.py       |
+| udp_client.py       | udp-client.py       |
+| udp_server.py       | udp-server.py       |
