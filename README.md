@@ -59,6 +59,8 @@ To view more detailed information about each script used in this example and how
 
 The README also contains detailed information for all other scripts included in this repository.
 
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
+
 </br>
 </br>
 
@@ -90,6 +92,8 @@ Sets up port 9000 to listen for UDP connections.
 ```
 Sets up port 3333 to listen for TCP connections.
 
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
+
 </br>
 </br>
 
@@ -119,6 +123,8 @@ Sends a random payload of up to 1024 bytes to port 9000 on the device at IP 192.
 python3 ./beacon-simulator.py -ip 192.168.56.101 --port 3333 --interval 300 --jitter 8 --max_payload 256 --udp
 ```
 Sends a random payload of up to 256 bytes to port 3333 on the device at IP 192.168.56.101 every 292-308 seconds using the UDP protocol.
+
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
 
 </br>
 </br>
@@ -162,6 +168,8 @@ Sends a random payload of up to 256 bytes to port 3333 on the device at IP 192.1
 ```
 Pings the server at 192.168.56.102 every 8-12 seconds.
 
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
+
 </br>
 </br>
 
@@ -191,6 +199,8 @@ Sets up a jittered beacon to port 80 on the server at 192.168.56.101
 ./simple-beacon.sh example.com:9000
 ```
 Sets up a jittered beacon to port 9000 on the server at example.com
+
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
 
 </br>
 </br>
@@ -256,6 +266,8 @@ On the server machine, navigate into the `python-scripts` directory and run:
 python3 ./udp-server.py
 ```
 
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
+
 </br>
 </br>
 
@@ -279,6 +291,8 @@ screen -r my-session
 ```
 This will re-attach `my-session` to the terminal window. You can then stop `simple-beacon.sh` by pressing "Ctrl + C".
 
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
+
 </br>
 </br>
 
@@ -293,3 +307,5 @@ File names have changed from previous versions in order to be more intuitive and
 | tcp_server.py       | tcp-server.py       |
 | udp_client.py       | udp-client.py       |
 | udp_server.py       | udp-server.py       |
+
+<p align="right"><a href="#table-of-contents">Back to Top</a></p>
