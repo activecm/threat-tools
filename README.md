@@ -4,6 +4,7 @@ This repository contains several scripts that will allow you to mimic a compromi
 
 ## Table of Contents
 [Overview](#overview)</br>
+[Dependencies](#dependencies)</br>
 [Example Setup](#example-setup)</br>
 [`simple-listener.sh`](#simple-listenersh)</br>
 [`beacon-simulator.py`](#beacon-simulatorpy)</br>
@@ -16,8 +17,6 @@ Some names were changed from previous versions in order to be more intuitive. Na
 
 [Script Name Changes](#script-name-changes)
 
-</br>
-</br>
 
 ## Overview
 In order to run these scripts, you will need two systems: one to act as the compromised client sending the beacon, and one to act as the C2 server. The client will need to run one of the beacon simulator scripts, and the server will need to run one of the scripts to set up a listener. With exception to the scripts within `python-scripts`, all beacon simulators are meant to be used in tandem with `simple-listener.sh` running on the server. 
@@ -25,6 +24,41 @@ In order to run these scripts, you will need two systems: one to act as the comp
 The only exception to this is if the client is running `simple-beacon.sh`, which can simulate beacon traffic by repeatedly sending web requests to any public web server.
 
 For the majority of users, `beacon-simulator.py` and `simple-listener.sh` will be sufficient to simulate a C2 channel. Alternative beacon simulators are available in the `shell-scripts` and `python-scripts` directories.
+
+</br>
+</br>
+
+## Example Setup
+This guide will walk you through setting up a C2 channel with `simple-listener.sh` running on the device acting as the server and `beacon-simulator.py` running on the device acting as the compromised client system.
+
+### Setting up the Server
+1. Clone this repository onto the server.
+1. Install `ncat` if it is not already installed. (While `simple-listener.sh` can run with `netcat` and `nc`, it may have issues with UDP timeouts.)
+1. Navigate into the `threat-tools` directory.
+1. Run the following command to set up port 9000 to listen for TCP connections:
+```
+./simple-listener.sh 9000
+```
+If successful, the console will print `Starting listener on TCP port 9000`.
+
+### Setting up the Client
+1. Clone this repository onto the client.
+1. Install `python3` if it is not already installed. Most systems have it.
+1. Navigate into the `threat-tools` directory.
+1. Run the following command, replacing `<SERVER IP>` with the server's IP address, to establish a TCP beacon with a 30-second interval with 5 seconds of jitter and a maximum payload of 1024 bytes.
+```
+python3 ./beacon-simulator.py -ip <SERVER IP> -p 9000 -i 30 -j 5 -m 1024
+```
+If successful, the console will start printing a message specifying the amount of jitter, the data sent (a random string of `a`'s), and the total number of beacons sent.
+
+To close the beacon, use "Ctrl + C" in each terminal to stop the scripts.
+
+### Next Steps
+To view more detailed information about each script used in this example and how to customize them, you can read their sections of the README:
+- [`simple-listener.sh`](#simple-listenersh)
+- [`beacon-simulator.py`](#beacon-simulatorpy)
+
+The README also contains detailed information for all other scripts included in this repository.
 
 </br>
 </br>
