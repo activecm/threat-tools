@@ -243,20 +243,26 @@ NOTE: This is only necessary if you changed the server port number in a `-client
 
 #### TCP Beacon Pair
 On the client machine, navigate into the `python-scripts` directory and run:
+
 ```
 python3 ./tcp-client.py
 ```
+
 On the server machine, navigate into the `python-scripts` directory and run:
+
 ```
 python3 ./tcp-server.py
 ```
 
 #### UDP Beacon Pair
 On the client machine, navigate into the `python-scripts` directory and run:
+
 ```
 python3 ./udp-client.py
 ```
+
 On the server machine, navigate into the `python-scripts` directory and run:
+
 ```
 python3 ./udp-server.py
 ```
@@ -292,7 +298,7 @@ This will re-attach `my-session` to the terminal window. You can then stop `simp
 </br>
 
 ## File Name Changes
-File names have changed from previous versions in order to be more intuitive and consistent. Returning users can reference the table below to confirm the new name for their past scripts:
+File names have changed from previous versions in order to be more intuitive and consistent. Returning users can reference the table below to confirm name changes.
 
 | Old Name            | New Name            |
 | ------------------- | ------------------- |
