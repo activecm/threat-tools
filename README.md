@@ -174,7 +174,7 @@ Pings the server at 192.168.56.102 every 8-12 seconds.
 </br>
 
 ## `simple-beacon.sh`
-`simple-beacon.sh` should run on the machine simulating the compromised client. It sends a very simple HTTP request with a custom user-agent string (`Modzilla/0.0001(Atari7800)`) to a specified IP address or FQDN every 200-350 seconds. It can be used on its own or with `simple-listener.sh` running on the server if you specify a port other than the default `80`.
+`simple-beacon.sh` should run on the machine simulating the compromised client. It sends a very simple HTTP request with a custom user-agent string (`Modzilla/0.0001(Atari7800)`) to a specified IP address or FQDN every 200-350 seconds. This script can be used on its own without any additional scripts such as `simple-listener.sh`.
 
 ### Dependencies
 This script uses common utilities commonly pre-installed on Unix-like systems. You should not need to install them. For your reference, the required utilities are:
@@ -191,14 +191,9 @@ This script uses common utilities commonly pre-installed on Unix-like systems. Y
 
 #### Example Commands
 ```
-./simple-beacon.sh 192.168.56.101
+./simple-beacon.sh activecountermeasures.com
 ```
-Sets up a jittered beacon to port 80 on the server at 192.168.56.101
-
-```
-./simple-beacon.sh example.com:9000
-```
-Sets up a jittered beacon to port 9000 on the server at example.com
+Simulates a jittered beacon by sending HTTP requests to activecountermeasures.com
 
 <p align="right"><a href="#table-of-contents">Back to Top</a></p>
 
