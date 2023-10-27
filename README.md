@@ -208,7 +208,7 @@ Default Payload Size: 0 - 1200 bytes</br>
 Default Beaconing Interval: 30 - 60 seconds
 
 ### Dependencies
-This script will require the following tools be installed on the system running the script:
+These scripts require the following tools to be installed on both systems.
 
 - `python3`: Interpreter to run the script. Most systems have this pre-installed.
 - `pycryptodome`: Python cryptographic library.
