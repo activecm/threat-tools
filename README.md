@@ -242,29 +242,29 @@ NOTE: This is only necessary if you changed the server port number in a `-client
 ### Running the Script Pairs
 
 #### TCP Beacon Pair
-On the client machine, navigate into the `python-scripts` directory and run:
-
-```
-python3 ./tcp-client.py
-```
-
 On the server machine, navigate into the `python-scripts` directory and run:
 
 ```
 python3 ./tcp-server.py
 ```
 
-#### UDP Beacon Pair
 On the client machine, navigate into the `python-scripts` directory and run:
 
 ```
-python3 ./udp-client.py
+python3 ./tcp-client.py
 ```
 
+#### UDP Beacon Pair
 On the server machine, navigate into the `python-scripts` directory and run:
 
 ```
 python3 ./udp-server.py
+```
+
+On the client machine, navigate into the `python-scripts` directory and run:
+
+```
+python3 ./udp-client.py
 ```
 
 <p align="right"><a href="#table-of-contents">Back to Top</a></p>
