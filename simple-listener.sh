@@ -1,9 +1,11 @@
 #!/bin/bash
-#Sets up a simple listening TCP or UDP port suitable for accepting a connections from beacon-simulator.sh
-#Copyright 2022, Active Countermeasures
-#Written by Bill Stearns bill@activecountermeasures.com
-#Released under the GPL
-#Version 0.1
+
+# Copyright 2022, Active Countermeasures
+# Written by Bill Stearns bill@activecountermeasures.com
+# Released under GPL 3.0 License
+# Version 0.1
+
+# Sets up a simple listening TCP or UDP port suitable for accepting a connections from beacon-simulator.sh
 
 
 Usage() {
